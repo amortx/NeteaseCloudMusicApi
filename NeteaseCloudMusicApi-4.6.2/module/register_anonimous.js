@@ -1,4 +1,6 @@
-// 游客登录
+// 邮箱登录
+
+const crypto = require('crypto')
 
 module.exports = async (query, request) => {
   query.cookie.os = 'iOS'

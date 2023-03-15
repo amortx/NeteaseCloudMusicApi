@@ -297,20 +297,6 @@ windows 下使用 git-bash 或者 cmder 等终端执行以下命令 :
 $ set HOST=127.0.0.1 && node app.js
 ```
 
-### npx 方式运行
-支持 npx 方式运行,会自动安装依赖和运行
-```
-npx NeteaseCloudMusicApi
-```
-如果需要更新,可使用 `npx NeteaseCloudMusicApi@版本号` 方式运行
-
-或者运行
-```
-npx NeteaseCloudMusicApi@latest
-
-```
-此命令每次执行都会使用最新版
-
 ## Vercel 部署
 
 v4.0.8 加入了 Vercel 配置文件,可以直接在 Vercel 下部署了,不需要自己的服务器(访问 Vercel 部署的接口,需要额外加一个 realIP 参数,如 `/song/url?id=191254&realIP=116.25.146.177`)
@@ -456,8 +442,6 @@ $ sudo docker run -d -p 3000:3000 netease-music-api
 说明 : 登录有三个接口,建议使用`encodeURIComponent`对密码编码或者使用`POST`请求,避免某些特殊字符无法解析,如`#`(`#`在 url 中会被识别为 hash,而不是 query)
 
 不要频繁调登录接口,不然可能会被风控,登录状态还存在就不要重复调登录接口
-
-因网易增加了网易云盾验证,密码登录暂时不要使用,尽量使用短信验证码登录和二维码登录,否则调用某些接口会触发需要验证的错误
 
 #### 1. 手机登录
 
@@ -1429,7 +1413,8 @@ tags: 歌单标签
 ### 搜索
 
 说明 : 调用此接口 , 传入搜索关键词可以搜索该音乐 / 专辑 / 歌手 / 歌单 / 用户 ,
-关键词可以多个 , 以空格隔开 , 如 " 周杰伦 搁浅 "( 不需要登录 ), 可通过 `/song/url` 接口传入歌曲 id 获取具体的播放链接
+关键词可以多个 , 以空格隔开 , 如 " 周杰伦 搁浅 "( 不需要登录 ), 搜索获取的
+mp3url 不能直接用 , 可通过 `/song/url` 接口传入歌曲 id 获取具体的播放链接
 
 **必选参数 :** `keywords` : 关键词
 
@@ -1467,7 +1452,8 @@ tags: 歌单标签
 
 ### 搜索建议
 
-说明 : 调用此接口 , 传入搜索关键词可获得搜索建议 , 搜索结果同时包含单曲 , 歌手 , 歌单信息
+说明 : 调用此接口 , 传入搜索关键词可获得搜索建议 , 搜索结果同时包含单曲 , 歌手 ,
+歌单 ,mv 信息
 
 **必选参数 :** `keywords` : 关键词
 
@@ -2227,14 +2213,14 @@ pc: 云盘歌曲信息，如果不存在该字段，则为非云盘歌曲
 
 **必选参数 :** `id`: 歌手 id
 
-**可选参数 :** `limit`: 取出数量 , 默认为 30
+**可选参数 :** `limit`: 取出数量 , 默认为 50
 
-`offset`: 偏移数量 , 用于分页 , 如 :( 页数 -1)\*30, 其中 30 为 limit 的值 , 默认
+`offset`: 偏移数量 , 用于分页 , 如 :( 页数 -1)\*50, 其中 50 为 limit 的值 , 默认
 为 0
 
 **接口地址 :** `/artist/album`
 
-**调用例子 :** `/artist/album?id=6452&limit=5` ( 周杰伦 )
+**调用例子 :** `/artist/album?id=6452&limit=30` ( 周杰伦 )
 
 返回数据如下图 :
 ![获取专辑内容](https://raw.githubusercontent.com/Binaryify/NeteaseCloudMusicApi/master/static/artist_album.png)
@@ -3524,8 +3510,6 @@ type='1009' 获取其 id, 如`/search?keywords= 代码时间 &type=1009`
 **必选参数 :** `id` : 歌曲 id
 
 **可选参数 :** `reason` : 推歌理由
-
-`yunbeiNum`: 云贝数量,默认10
 
 **接口地址 :** `/yunbei/rcmd/song`
 
